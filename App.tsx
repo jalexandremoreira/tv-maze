@@ -9,6 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import HomeScreen from './Screens/HomeScreen';
 import ShowScreen from './Screens/ShowScreen';
 import { useAppFonts as useFonts } from './hooks/useFonts';
+import { Theme } from './theme';
 
 export type RootStackParamList = {
   home: undefined;
@@ -45,12 +46,17 @@ export default function App() {
     }
   }, [appIsReady]);
 
+  const { colors } = Theme;
+
   if (!appIsReady || !fontsLoaded) {
     return null;
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+    <GestureHandlerRootView
+      style={{ flex: 1, backgroundColor: colors.black }}
+      onLayout={onLayoutRootView}
+    >
       <NavigationContainer>
         <Stack.Navigator initialRouteName="home">
           <Stack.Screen

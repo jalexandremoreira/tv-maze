@@ -1,12 +1,12 @@
 import React from 'react';
-import { Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
-import { useLinkTo } from '@react-navigation/native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import { fetchShows, fetchCast, fetchCrew } from '../api';
 import Header from '../Components/Header';
+import SearchBar from '../Components/SearchBar';
+import ShowCard from '../Components/ShowCard';
 import { Theme } from '../theme';
 import { TvShow } from '../types';
-import SearchBar from '../Components/SearchBar';
+import { fetchShows } from '../api';
 
 interface Props {
   score?: number;
@@ -17,12 +17,14 @@ export default function HomeScreen() {
   const [shows, setShows] = React.useState<Props[] | null>(null);
   const [searchInput, setSearchInput] = React.useState<string | null>(null);
 
-  const { colors, font } = Theme;
-
-  const linkTo = useLinkTo();
+  const { colors } = Theme;
 
   const handleSearch = () => {
-    searchInput ? fetchShows(searchInput).then((data) => setShows(data)) : null;
+    searchInput
+      ? fetchShows(searchInput).then((data) => {
+          setShows(data);
+        })
+      : null;
   };
 
   return (
@@ -35,13 +37,15 @@ export default function HomeScreen() {
         width: '100%',
       }}
     >
-      <View
+      <ScrollView
         style={{
+          width: '100%',
+        }}
+        contentContainerStyle={{
           alignItems: 'center',
-          flex: 1,
+          // flex: 1,
           justifyContent: 'flex-start',
           padding: 20,
-          width: '100%',
         }}
       >
         <Header />
@@ -52,22 +56,31 @@ export default function HomeScreen() {
           setSearchInput={setSearchInput}
         />
 
-        {shows &&
-          shows.map((item, index) => (
-            <Pressable
-              key={index}
-              onPress={() => {
-                linkTo(`/show/${item?.show?.id}`);
-              }}
-            >
-              <Text
-                style={{ color: colors.white.main, fontSize: font.size.md }}
-              >
-                {item?.show?.name}
-              </Text>
-            </Pressable>
-          ))}
-      </View>
+        {shows && (
+          <View
+            style={{
+              display: 'flex',
+              marginTop: 15,
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              width: '100%',
+            }}
+          >
+            {shows.map((item, index) => (
+              <ShowCard
+                key={index}
+                id={item?.show?.id}
+                img={item?.show?.image?.medium || item?.show?.image?.original}
+                network={
+                  item?.show?.network?.name || item?.show?.webChannel?.name
+                }
+                title={item?.show?.name}
+              />
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
