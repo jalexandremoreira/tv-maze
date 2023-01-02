@@ -25,11 +25,11 @@ export default function ShowScreen() {
   return (
     <View
       style={{
+        // minHeight: '100vh',
         alignItems: 'center',
         backgroundColor: '#fff',
         flex: 1,
         justifyContent: 'center',
-        // minHeight: '100vh',
         paddingTop: '20%',
       }}
     >
