@@ -11,7 +11,12 @@ export const Theme = {
   },
   font: {
     size: {
+      title: 60,
       md: 20,
+    },
+    family: {
+      primary: 'Roboto',
+      header: 'Anton_400Regular',
     },
   },
 };
