@@ -69,7 +69,7 @@ export default function ShowScreen() {
           zIndex: 10,
         }}
       >
-        <Back size={18} color={colors.white.main} />
+        <Back size={22} color={colors.white.main} />
       </Pressable>
 
       <ScrollView

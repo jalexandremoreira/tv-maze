@@ -1,7 +1,9 @@
 const baseUrl = 'https://api.tvmaze.com';
 
 const fetchShows = async (show: string) => {
-  const parsedShow = show.toLowerCase().trim().replaceAll(' ', '%20');
+  // const parsedShow = show.toLowerCase().trim().replaceAll(' ', '%20');
+  // below is a polyfill for replaceAll
+  const parsedShow = show.toLowerCase().trim().replace(/ /g, '%20');
 
   return await fetch(`${baseUrl}/search/shows?q=${parsedShow}`)
     .then((response) => response.json())

@@ -21,9 +21,17 @@ export default function HomeScreen() {
 
   const handleSearch = () => {
     searchInput
-      ? fetchShows(searchInput).then((data) => {
-          setShows(data);
-        })
+      ? fetchShows(searchInput)
+          .then((data) => {
+            data && setShows(data);
+          })
+          .catch(function (error) {
+            console.log(
+              'There has been a problem with your fetch operation:',
+              error.message
+            );
+            throw error;
+          })
       : null;
   };
 
