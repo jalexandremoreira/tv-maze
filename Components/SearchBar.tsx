@@ -37,7 +37,7 @@ export default function SearchBar({
           borderWidth: 1,
           color: colors.white[100],
           flex: 1,
-          fontSize: font.size.md,
+          fontSize: font.size.h4,
           marginRight: 10,
           paddingHorizontal: paddingH,
           paddingVertical: paddingV,
@@ -58,7 +58,7 @@ export default function SearchBar({
         <Text
           style={{
             color: colors.black,
-            fontSize: font.size.md,
+            fontSize: font.size.h4,
           }}
         >
           search

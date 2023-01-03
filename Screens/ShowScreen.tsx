@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, SafeAreaView, ScrollView } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import Header from '../Components/Header';
 import { RootStackParamList } from '../App';
 import { fetchShowById, fetchCast, fetchCrew } from '../api';
 import { TvShow } from '../types';
-fetchShowById;
+import { Theme } from '../theme';
 
 export default function ShowScreen() {
   const { params } = useRoute<RouteProp<RootStackParamList, 'show'>>();
@@ -14,31 +15,51 @@ export default function ShowScreen() {
   const [cast, setCast] = React.useState<any | null>(null);
   const [crew, setCrew] = React.useState<any | null>(null);
 
+  const id = params?.screen;
+  const { colors } = Theme;
+
   React.useEffect(() => {
-    fetchShowById(params?.screen).then((data) => setShow(data));
-    fetchCast(params?.screen).then((data) => setCast(data));
-    fetchCrew(params?.screen).then((data) => setCrew(data));
+    fetchShowById(id).then((data) => setShow(data));
+    fetchCast(id).then((data) => setCast(data));
+    fetchCrew(id).then((data) => setCrew(data));
   }, []);
 
   const HTMLRegex = /(<([^>]+)>)/gi;
 
+  const MainText = ({ children }: { children?: string }) => (
+    <Text style={{ color: colors.white.main, fontSize: 16 }}>{children}</Text>
+  );
+
   return (
-    <View
+    <SafeAreaView
       style={{
-        // minHeight: '100vh',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: colors.black,
         flex: 1,
-        justifyContent: 'center',
-        paddingTop: '20%',
+        justifyContent: 'flex-start',
+        width: '100%',
       }}
     >
-      <View style={{ marginBottom: '5%' }}>
-        <Text>{show?.name}</Text>
-        <Text>{show?.summary?.replace(HTMLRegex, '')}</Text>
-        {show?.network && <Text>{show?.network?.name}</Text>}
-        {show?.webChannel && <Text>{show?.webChannel?.name}</Text>}
-      </View>
-    </View>
+      <ScrollView
+        style={{
+          width: '100%',
+        }}
+        contentContainerStyle={{
+          alignItems: 'center',
+          // flex: 1,
+          justifyContent: 'flex-start',
+          padding: 20,
+        }}
+      >
+        <Header />
+
+        <View style={{ marginBottom: '5%' }}>
+          <MainText>{show?.name}</MainText>
+          <MainText>{show?.summary?.replace(HTMLRegex, '')}</MainText>
+          {show?.network && <MainText>{show?.network?.name}</MainText>}
+          {show?.webChannel && <MainText>{show?.webChannel?.name}</MainText>}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

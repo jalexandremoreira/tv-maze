@@ -67,16 +67,6 @@ export default function ShowCard({ id, img, network, title }: Props) {
 
   const { colors, border, font } = Theme;
 
-  const FavoriteButton = () => (
-    <Pressable onPress={handleFavorite}>
-      {isFavorite ? (
-        <HeartFull size={18} color={colors.white.main} />
-      ) : (
-        <HeartEmpty size={18} color={colors.white.main} />
-      )}
-    </Pressable>
-  );
-
   return (
     <Pressable
       onPress={() => {
@@ -93,7 +83,8 @@ export default function ShowCard({ id, img, network, title }: Props) {
         width: '48%',
       }}
     >
-      <View
+      <Pressable
+        onPress={handleFavorite}
         style={{
           backgroundColor: colors.black,
           borderRadius: 50,
@@ -105,8 +96,12 @@ export default function ShowCard({ id, img, network, title }: Props) {
           zIndex: 1,
         }}
       >
-        <FavoriteButton />
-      </View>
+        {isFavorite ? (
+          <HeartFull size={18} color={colors.white.main} />
+        ) : (
+          <HeartEmpty size={18} color={colors.white.main} />
+        )}
+      </Pressable>
 
       {img ? (
         <Image
@@ -141,6 +136,8 @@ export default function ShowCard({ id, img, network, title }: Props) {
           <Text
             style={{
               color: colors.white.main,
+              fontWeight: 'bold',
+              fontSize: font.size.h5,
             }}
           >
             {title}

@@ -12,7 +12,8 @@ export const Theme = {
   font: {
     size: {
       title: 60,
-      md: 20,
+      h4: 20,
+      h5: 18,
     },
     family: {
       primary: 'Roboto',
