@@ -109,7 +109,6 @@ export default function ShowCard({ id, img, network, title }: Props) {
             width: '100%',
             height: 233,
           }}
-          resizeMode="contain"
           source={{
             uri: img,
           }}
