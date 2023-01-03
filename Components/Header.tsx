@@ -12,7 +12,7 @@ export default function Header() {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // marginVertical: 15,
+        paddingHorizontal: 20,
         width: '100%',
       }}
     >

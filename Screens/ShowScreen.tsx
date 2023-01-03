@@ -1,8 +1,18 @@
 import * as React from 'react';
-import { Text, View, SafeAreaView, ScrollView } from 'react-native';
+import {
+  Image,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+import { useLinkTo } from '@react-navigation/native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import Header from '../Components/Header';
+import { Back } from '../Components/Icons';
 import { RootStackParamList } from '../App';
 import { fetchShowById, fetchCast, fetchCrew } from '../api';
 import { TvShow } from '../types';
@@ -15,8 +25,13 @@ export default function ShowScreen() {
   const [cast, setCast] = React.useState<any | null>(null);
   const [crew, setCrew] = React.useState<any | null>(null);
 
+  const linkTo = useLinkTo();
+
   const id = params?.screen;
   const { colors } = Theme;
+  // const img = show?.image?.original || show?.image?.medium;
+  const img = show?.image?.medium;
+  const imgHeight = 500;
 
   React.useEffect(() => {
     fetchShowById(id).then((data) => setShow(data));
@@ -40,6 +55,23 @@ export default function ShowScreen() {
         width: '100%',
       }}
     >
+      <Header />
+      <Pressable
+        onPress={() => linkTo('/home')}
+        style={{
+          backgroundColor: colors.black,
+          borderRadius: 50,
+          elevation: 10,
+          left: 20,
+          padding: 6,
+          position: 'absolute',
+          top: Platform.OS === 'ios' ? 150 : 110,
+          zIndex: 10,
+        }}
+      >
+        <Back size={18} color={colors.white.main} />
+      </Pressable>
+
       <ScrollView
         style={{
           width: '100%',
@@ -48,12 +80,29 @@ export default function ShowScreen() {
           alignItems: 'center',
           // flex: 1,
           justifyContent: 'flex-start',
-          padding: 20,
         }}
       >
-        <Header />
-
-        <View style={{ marginBottom: '5%' }}>
+        {img ? (
+          <Image
+            source={{ uri: img }}
+            style={{ height: imgHeight, width: '100%', zIndex: 10 }}
+            // resizeMode="contain"
+          />
+        ) : (
+          <View
+            style={{
+              width: '100%',
+              height: imgHeight,
+              backgroundColor: colors.white.main,
+              zIndex: 10,
+            }}
+          />
+        )}
+        <View
+          style={{
+            padding: 20,
+          }}
+        >
           <MainText>{show?.name}</MainText>
           <MainText>{show?.summary?.replace(HTMLRegex, '')}</MainText>
           {show?.network && <MainText>{show?.network?.name}</MainText>}

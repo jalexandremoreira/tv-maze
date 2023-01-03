@@ -37,6 +37,7 @@ export default function HomeScreen() {
         width: '100%',
       }}
     >
+      <Header />
       <ScrollView
         style={{
           width: '100%',
@@ -45,11 +46,9 @@ export default function HomeScreen() {
           alignItems: 'center',
           // flex: 1,
           justifyContent: 'flex-start',
-          padding: 20,
+          paddingHorizontal: 20,
         }}
       >
-        <Header />
-
         <SearchBar
           handleSearch={handleSearch}
           searchInput={searchInput}
