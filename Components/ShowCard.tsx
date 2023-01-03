@@ -1,7 +1,8 @@
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { useLinkTo } from '@react-navigation/native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import { includes } from 'lodash';
 
 import { HeartEmpty, HeartFull } from '../Components/Icons';
 import { Theme } from '../theme';
@@ -17,32 +18,61 @@ export default function ShowCard({ id, img, network, title }: Props) {
   const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
 
   const linkTo = useLinkTo();
+  const { getItem, setItem } = useAsyncStorage('@favorites');
 
-  //   const getStoredData = async () => {
-  //     try {
-  //       const jsonValue = await AsyncStorage.getItem('favorites');
-  //       return jsonValue !== null ? JSON.parse(jsonValue) : null;
-  //     } catch (e) {
-  //       console.log(e)
-  //     }
-  //   };
+  const getStoredData = async () => {
+    try {
+      const jsonValue = await getItem();
+      return jsonValue ? JSON.parse(jsonValue) : [];
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  //   React.useEffect(() => {
-  //     const storedData: number[] = [];
+  const storeData = async (value: number) => {
+    getStoredData().then((data) => {
+      if (includes(data, value)) {
+        const filteredData = data.filter(
+          (storedId: number) => storedId !== value
+        );
+        try {
+          const jsonValue = JSON.stringify(filteredData);
+          setItem(jsonValue);
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        try {
+          const jsonValue = JSON.stringify([...data, value]);
+          setItem(jsonValue);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    });
+  };
 
-  //     getStoredData().then((data) => data && storedData.push(data));
+  React.useEffect(() => {
+    getStoredData().then((data) => {
+      if (id && includes(data, id)) {
+        setIsFavorite(true);
+      }
+    });
+  }, []);
 
-  //     storedData.filter((storedId: number) => storedId === id);
-  //   }, []);
+  const handleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    id && storeData(id);
+  };
 
   const { colors, border, font } = Theme;
 
   const FavoriteButton = () => (
-    <Pressable onPress={() => setIsFavorite(!isFavorite)}>
+    <Pressable onPress={handleFavorite}>
       {isFavorite ? (
-        <HeartFull size={16} color={colors.white.main} />
+        <HeartFull size={18} color={colors.white.main} />
       ) : (
-        <HeartEmpty size={16} color={colors.white.main} />
+        <HeartEmpty size={18} color={colors.white.main} />
       )}
     </Pressable>
   );

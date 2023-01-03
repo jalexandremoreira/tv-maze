@@ -10,12 +10,12 @@ fetchShowById;
 export default function ShowScreen() {
   const { params } = useRoute<RouteProp<RootStackParamList, 'show'>>();
 
-  const [tv, setTv] = React.useState<TvShow | null>(null);
+  const [show, setShow] = React.useState<TvShow | null>(null);
   const [cast, setCast] = React.useState<any | null>(null);
   const [crew, setCrew] = React.useState<any | null>(null);
 
   React.useEffect(() => {
-    fetchShowById(params?.screen).then((data) => setTv(data));
+    fetchShowById(params?.screen).then((data) => setShow(data));
     fetchCast(params?.screen).then((data) => setCast(data));
     fetchCrew(params?.screen).then((data) => setCrew(data));
   }, []);
@@ -34,10 +34,10 @@ export default function ShowScreen() {
       }}
     >
       <View style={{ marginBottom: '5%' }}>
-        <Text>{tv?.name}</Text>
-        <Text>{tv?.summary?.replace(HTMLRegex, '')}</Text>
-        {tv?.network && <Text>{tv?.network?.name}</Text>}
-        {tv?.webChannel && <Text>{tv?.webChannel?.name}</Text>}
+        <Text>{show?.name}</Text>
+        <Text>{show?.summary?.replace(HTMLRegex, '')}</Text>
+        {show?.network && <Text>{show?.network?.name}</Text>}
+        {show?.webChannel && <Text>{show?.webChannel?.name}</Text>}
       </View>
     </View>
   );

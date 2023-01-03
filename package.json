@@ -19,6 +19,7 @@
     "expo-app-loading": "~2.1.1",
     "expo-font": "~11.0.1",
     "expo-status-bar": "~1.4.2",
+    "lodash": "^4.17.21",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/": "react-navigation/native",
+    "@types/lodash": "^4.14.191",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.70.6",
     "@types/react-native-navigation": "^2.0.0",
