@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { RefreshControl, SafeAreaView, ScrollView, View } from 'react-native';
 
 import Header from '../Components/Header';
 import SearchBar from '../Components/SearchBar';
@@ -12,13 +12,21 @@ import { useStoredFavorites } from '../hooks/useStoredFavorites';
 export default function HomeScreen() {
   const [shows, setShows] = React.useState<TvShow[] | null>(null);
   const [searchInput, setSearchInput] = React.useState<string | null>(null);
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const { getStoredData } = useStoredFavorites();
 
   const { colors } = Theme;
 
+  const onRefresh = React.useCallback(() => {
+    console.log(searchInput);
+    setRefreshing(true);
+    searchInput ? onSearch() : onShowFavorites();
+    setRefreshing(false);
+  }, []);
+
   const onSearch = () => {
-    setShows(null);
+    // setShows(null);
 
     searchInput
       ? fetchShows(searchInput)
@@ -79,6 +87,13 @@ export default function HomeScreen() {
           justifyContent: 'flex-start',
           paddingHorizontal: 20,
         }}
+        refreshControl={
+          <RefreshControl
+            tintColor={colors.white.main}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       >
         <SearchBar
           handleSearch={onSearch}
