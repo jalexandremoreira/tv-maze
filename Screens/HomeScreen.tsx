@@ -19,6 +19,10 @@ export default function HomeScreen() {
 
   const { colors } = Theme;
 
+  const handleShowFavorites = () => {
+    console.log('handleShowFavorites');
+  };
+
   const handleSearch = () => {
     searchInput
       ? fetchShows(searchInput)
@@ -45,7 +49,7 @@ export default function HomeScreen() {
         width: '100%',
       }}
     >
-      <Header />
+      <Header handleShowFavorites={handleShowFavorites} />
       <ScrollView
         style={{
           width: '100%',

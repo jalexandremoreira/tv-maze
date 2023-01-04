@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Pressable, View, Text } from 'react-native';
 
+import { HeartFull } from './Icons';
 import { Theme } from '../theme';
 
-export default function Header() {
-  const { colors, border, font } = Theme;
+export default function Header({
+  handleShowFavorites,
+}: {
+  handleShowFavorites?: () => void;
+}) {
+  const { colors, font } = Theme;
+
   return (
     <View
       style={{
@@ -25,13 +31,10 @@ export default function Header() {
       >
         TV MAZE
       </Text>
-      <Text
-        style={{
-          color: colors.white.main,
-        }}
-      >
-        heart
-      </Text>
+
+      <Pressable onPress={handleShowFavorites}>
+        <HeartFull color={colors.white.main} size={40} />
+      </Pressable>
     </View>
   );
 }
