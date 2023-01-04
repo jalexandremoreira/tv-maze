@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useLinkTo } from '@react-navigation/native';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { includes, toNumber } from 'lodash';
 
 import Header from '../Components/Header';
 import {
@@ -24,16 +25,17 @@ import { RootStackParamList } from '../App';
 import { fetchShowById, fetchCast, fetchCrew } from '../api';
 import { TvShow } from '../types';
 import { Theme } from '../theme';
+import { useStoredFavorites } from '../hooks/useStoredFavorites';
 
 export default function ShowScreen() {
   const { params } = useRoute<RouteProp<RootStackParamList, 'show'>>();
+  const { getStoredData, storeData } = useStoredFavorites();
+  const linkTo = useLinkTo();
 
   const [show, setShow] = React.useState<TvShow | null>(null);
   const [cast, setCast] = React.useState<any | null>(null);
   const [crew, setCrew] = React.useState<any | null>(null);
   const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
-
-  const linkTo = useLinkTo();
 
   const id = params?.screen;
   const { colors, font } = Theme;
@@ -45,6 +47,19 @@ export default function ShowScreen() {
     fetchCast(id).then((data) => setCast(data));
     fetchCrew(id).then((data) => setCrew(data));
   }, []);
+
+  React.useEffect(() => {
+    getStoredData().then((data) => {
+      if (id && includes(data, toNumber(id))) {
+        setIsFavorite(true);
+      }
+    });
+  }, []);
+
+  const handleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    id && storeData(toNumber(id));
+  };
 
   const HTMLRegex = /(<([^>]+)>)/gi;
 
@@ -194,7 +209,7 @@ export default function ShowScreen() {
             >
               <Pressable
                 style={{ ...styles.buttons, marginRight: 10 }}
-                onPress={() => setIsFavorite(!isFavorite)}
+                onPress={handleFavorite}
               >
                 {isFavorite ? (
                   <HeartFull size={22} color={colors.white.main} />
