@@ -17,7 +17,7 @@ export default function HomeScreen() {
 
   const { colors } = Theme;
 
-  const handleSearch = () => {
+  const onSearch = () => {
     setShows(null);
 
     searchInput
@@ -38,7 +38,7 @@ export default function HomeScreen() {
       : null;
   };
 
-  const handleShowFavorites = () => {
+  const onShowFavorites = () => {
     setShows(null);
 
     getStoredData().then((data: number[]) => {
@@ -68,7 +68,7 @@ export default function HomeScreen() {
         width: '100%',
       }}
     >
-      <Header handleShowFavorites={handleShowFavorites} />
+      <Header handleShowFavorites={onShowFavorites} />
       <ScrollView
         style={{
           width: '100%',
@@ -81,7 +81,7 @@ export default function HomeScreen() {
         }}
       >
         <SearchBar
-          handleSearch={handleSearch}
+          handleSearch={onSearch}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
         />

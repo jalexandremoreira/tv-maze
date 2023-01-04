@@ -6,6 +6,7 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
+  Share,
   Text,
   View,
 } from 'react-native';
@@ -19,7 +20,7 @@ import {
   HeartEmpty,
   HeartFull,
   OpenLink,
-  Share,
+  Share as ShareIcon,
 } from '../Components/Icons';
 import { RootStackParamList } from '../App';
 import { fetchShowById, fetchCast, fetchCrew } from '../api';
@@ -56,9 +57,24 @@ export default function ShowScreen() {
     });
   }, []);
 
-  const handleFavorite = () => {
+  const onFavorite = () => {
     setIsFavorite(!isFavorite);
     id && storeData(toNumber(id));
+  };
+
+  const onShare = async () => {
+    try {
+      show?.url &&
+        (Platform.OS === 'ios'
+          ? await Share.share({
+              url: show?.url,
+            })
+          : await Share.share({
+              message: show?.url,
+            }));
+    } catch (error: any) {
+      error && console.log(error.message);
+    }
   };
 
   const HTMLRegex = /(<([^>]+)>)/gi;
@@ -209,7 +225,7 @@ export default function ShowScreen() {
             >
               <Pressable
                 style={{ ...styles.buttons, marginRight: 10 }}
-                onPress={handleFavorite}
+                onPress={onFavorite}
               >
                 {isFavorite ? (
                   <HeartFull size={22} color={colors.white.main} />
@@ -218,12 +234,11 @@ export default function ShowScreen() {
                 )}
               </Pressable>
 
-              <Pressable
-                style={styles.buttons}
-                onPress={() => console.log('sharing')}
-              >
-                <Share size={22} color={colors.white.main} />
-              </Pressable>
+              {Platform.OS !== 'web' && show?.url ? (
+                <Pressable style={styles.buttons} onPress={onShare}>
+                  <ShareIcon size={22} color={colors.white.main} />
+                </Pressable>
+              ) : null}
             </View>
           </HStack>
 
