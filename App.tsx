@@ -5,6 +5,7 @@ import { Pressable, SafeAreaView, StatusBar, Text, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { enableScreens } from 'react-native-screens';
 import * as SplashScreen from 'expo-splash-screen';
+import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 
 import HomeScreen from './Screens/HomeScreen';
 import ShowScreen from './Screens/ShowScreen';
@@ -27,6 +28,8 @@ export default function App() {
 
   const [appIsReady, setAppIsReady] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(true);
+  const [connectionState, setConnectionState] =
+    React.useState<NetInfoState | null>(null);
 
   StatusBar.setBarStyle('light-content', true);
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,13 +40,18 @@ export default function App() {
     }
   }, []);
 
+  React.useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setConnectionState(state);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  });
+
   const onLayoutRootView = React.useCallback(async () => {
     if (appIsReady) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
       await SplashScreen.hideAsync();
     }
   }, [appIsReady]);
@@ -55,44 +63,56 @@ export default function App() {
   }
 
   const SnackBar = () => {
-    if (!isOpen) return null;
+    if (connectionState?.isConnected === false) {
+      setIsOpen(true);
+    }
 
-    return (
-      <View
-        style={{
-          left: 0,
-          position: 'relative',
-          top: 0,
-          width: '100%',
-          paddingHorizontal: 20,
-          paddingTop: 20,
-        }}
-      >
+    const message =
+      connectionState?.isConnected === false
+        ? 'No internet connection!'
+        : connectionState?.details?.isConnectionExpensive
+        ? 'You are using a mobile data connection'
+        : null;
+
+    if (isOpen && message)
+      return (
         <View
           style={{
-            alignItems: 'center',
-            backgroundColor: colors.white.main,
-            borderRadius: 10,
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
             left: 0,
-            // margin: 20,
-            padding: 10,
+            position: 'relative',
+            top: 0,
             width: '100%',
+            paddingHorizontal: 20,
+            paddingTop: 20,
           }}
         >
-          <Text style={{ color: colors.black, fontSize: font.size.h4 }}>
-            Hello world
-          </Text>
+          <View
+            style={{
+              alignItems: 'center',
+              backgroundColor: colors.white.main,
+              borderRadius: 10,
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              left: 0,
+              // margin: 20,
+              padding: 10,
+              width: '100%',
+            }}
+          >
+            <Text style={{ color: colors.black, fontSize: font.size.h4 }}>
+              {message}
+            </Text>
 
-          <Pressable onPress={() => setIsOpen(false)}>
-            <Close color={colors.black} size={22} />
-          </Pressable>
+            <Pressable onPress={() => setIsOpen(false)}>
+              <Close color={colors.black} size={22} />
+            </Pressable>
+          </View>
         </View>
-      </View>
-    );
+      );
+
+    return null;
   };
 
   return (
