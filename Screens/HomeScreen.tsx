@@ -26,7 +26,7 @@ export default function HomeScreen() {
   }, []);
 
   const onSearch = () => {
-    // setShows(null);
+    setShows(null);
 
     searchInput
       ? fetchShows(searchInput)
