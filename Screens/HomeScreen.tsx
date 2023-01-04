@@ -6,28 +6,27 @@ import SearchBar from '../Components/SearchBar';
 import ShowCard from '../Components/ShowCard';
 import { Theme } from '../theme';
 import { TvShow } from '../types';
-import { fetchShows } from '../api';
-
-interface Props {
-  score?: number;
-  show?: TvShow;
-}
+import { fetchShows, fetchShowById } from '../api';
+import { useStoredFavorites } from '../hooks/useStoredFavorites';
 
 export default function HomeScreen() {
-  const [shows, setShows] = React.useState<Props[] | null>(null);
+  const [shows, setShows] = React.useState<TvShow[] | null>(null);
   const [searchInput, setSearchInput] = React.useState<string | null>(null);
+
+  const { getStoredData } = useStoredFavorites();
 
   const { colors } = Theme;
 
-  const handleShowFavorites = () => {
-    console.log('handleShowFavorites');
-  };
-
   const handleSearch = () => {
+    setShows(null);
+
     searchInput
       ? fetchShows(searchInput)
           .then((data) => {
-            data && setShows(data);
+            data.map((datum: { show: TvShow; score: number }) => {
+              // matching the API response to the TvShow type
+              setShows((prevShows) => [...(prevShows || []), datum.show]);
+            });
           })
           .catch(function (error) {
             console.log(
@@ -37,6 +36,26 @@ export default function HomeScreen() {
             throw error;
           })
       : null;
+  };
+
+  const handleShowFavorites = () => {
+    setShows(null);
+
+    getStoredData().then((data: number[]) => {
+      data.map((storedId: number) => {
+        fetchShowById(storedId.toString())
+          // fetching each show by id
+          .then((show: TvShow) => {
+            setShows((prevShows) => [...(prevShows || []), show]);
+          })
+          .catch(function (error) {
+            console.log(
+              'There has been a problem with your fetch operation:',
+              error.message
+            );
+          });
+      });
+    });
   };
 
   return (
@@ -81,12 +100,10 @@ export default function HomeScreen() {
             {shows.map((item, index) => (
               <ShowCard
                 key={index}
-                id={item?.show?.id}
-                img={item?.show?.image?.medium || item?.show?.image?.original}
-                network={
-                  item?.show?.network?.name || item?.show?.webChannel?.name
-                }
-                title={item?.show?.name}
+                id={item?.id}
+                img={item?.image?.medium || item?.image?.original}
+                network={item?.network?.name || item?.webChannel?.name}
+                title={item?.name}
               />
             ))}
           </View>

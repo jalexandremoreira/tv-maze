@@ -33,8 +33,6 @@ export default function ShowScreen() {
   const [crew, setCrew] = React.useState<any | null>(null);
   const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
 
-  console.log('show', show);
-
   const linkTo = useLinkTo();
 
   const id = params?.screen;
@@ -115,9 +113,7 @@ export default function ShowScreen() {
   const networkLink =
     show?.network?.officialSite || show?.webChannel?.officialSite;
   const creators = crew?.filter((item: any) => item.type === 'Creator');
-  console.log(creators);
   const actors = cast?.slice(0, 4);
-  console.log(actors);
 
   return (
     <SafeAreaView

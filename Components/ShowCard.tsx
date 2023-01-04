@@ -1,11 +1,11 @@
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { useLinkTo } from '@react-navigation/native';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { includes } from 'lodash';
 
 import { HeartEmpty, HeartFull } from '../Components/Icons';
 import { Theme } from '../theme';
+import { useStoredFavorites } from '../hooks/useStoredFavorites';
 
 interface Props {
   id?: number;
@@ -17,40 +17,8 @@ interface Props {
 export default function ShowCard({ id, img, network, title }: Props) {
   const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
 
+  const { getStoredData, storeData } = useStoredFavorites();
   const linkTo = useLinkTo();
-  const { getItem, setItem } = useAsyncStorage('@favorites');
-
-  const getStoredData = async () => {
-    try {
-      const jsonValue = await getItem();
-      return jsonValue ? JSON.parse(jsonValue) : [];
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const storeData = async (value: number) => {
-    getStoredData().then((data) => {
-      if (includes(data, value)) {
-        const filteredData = data.filter(
-          (storedId: number) => storedId !== value
-        );
-        try {
-          const jsonValue = JSON.stringify(filteredData);
-          setItem(jsonValue);
-        } catch (e) {
-          console.log(e);
-        }
-      } else {
-        try {
-          const jsonValue = JSON.stringify([...data, value]);
-          setItem(jsonValue);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    });
-  };
 
   React.useEffect(() => {
     getStoredData().then((data) => {

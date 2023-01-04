@@ -32,9 +32,11 @@ export default function Header({
         TV MAZE
       </Text>
 
-      <Pressable onPress={handleShowFavorites}>
-        <HeartFull color={colors.white.main} size={40} />
-      </Pressable>
+      {handleShowFavorites && (
+        <Pressable onPress={handleShowFavorites}>
+          <HeartFull color={colors.white.main} size={40} />
+        </Pressable>
+      )}
     </View>
   );
 }
