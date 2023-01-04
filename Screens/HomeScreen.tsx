@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl, SafeAreaView, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import Header from '../Components/Header';
 import SearchBar from '../Components/SearchBar';
@@ -67,7 +67,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView
+    <View
       style={{
         alignItems: 'center',
         backgroundColor: colors.black,
@@ -124,6 +124,6 @@ export default function HomeScreen() {
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

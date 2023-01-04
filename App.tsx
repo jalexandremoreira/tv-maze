@@ -1,13 +1,14 @@
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'react-native';
+import { Pressable, SafeAreaView, StatusBar, Text, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { enableScreens } from 'react-native-screens';
 import * as SplashScreen from 'expo-splash-screen';
 
 import HomeScreen from './Screens/HomeScreen';
 import ShowScreen from './Screens/ShowScreen';
+import { Close } from './Components/Icons';
 import { useAppFonts as useFonts } from './hooks/useFonts';
 import { Theme } from './theme';
 
@@ -25,6 +26,7 @@ export default function App() {
   enableScreens();
 
   const [appIsReady, setAppIsReady] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(true);
 
   StatusBar.setBarStyle('light-content', true);
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,35 +48,85 @@ export default function App() {
     }
   }, [appIsReady]);
 
-  const { colors } = Theme;
+  const { colors, font } = Theme;
 
   if (!appIsReady || !fontsLoaded) {
     return null;
   }
+
+  const SnackBar = () => {
+    if (!isOpen) return null;
+
+    return (
+      <View
+        style={{
+          left: 0,
+          position: 'relative',
+          top: 0,
+          width: '100%',
+          paddingHorizontal: 20,
+          paddingTop: 20,
+        }}
+      >
+        <View
+          style={{
+            alignItems: 'center',
+            backgroundColor: colors.white.main,
+            borderRadius: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            left: 0,
+            // margin: 20,
+            padding: 10,
+            width: '100%',
+          }}
+        >
+          <Text style={{ color: colors.black, fontSize: font.size.h4 }}>
+            Hello world
+          </Text>
+
+          <Pressable onPress={() => setIsOpen(false)}>
+            <Close color={colors.black} size={22} />
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <GestureHandlerRootView
       style={{ flex: 1, backgroundColor: colors.black }}
       onLayout={onLayoutRootView}
     >
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="home">
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="home"
-            component={HomeScreen}
-          />
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="show"
-            component={ShowScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <SafeAreaView
+        style={{
+          backgroundColor: colors.black,
+          flex: 1,
+          width: '100%',
+        }}
+      >
+        <SnackBar />
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="home">
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="home"
+              component={HomeScreen}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="show"
+              component={ShowScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 }

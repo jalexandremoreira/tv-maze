@@ -4,7 +4,6 @@ import {
   Linking,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Share,
   Text,
@@ -147,7 +146,7 @@ export default function ShowScreen() {
   const actors = cast?.slice(0, 4);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         alignItems: 'center',
         backgroundColor: colors.black,
@@ -166,7 +165,7 @@ export default function ShowScreen() {
           left: 20,
           padding: 6,
           position: 'absolute',
-          top: Platform.OS === 'ios' ? 150 : 110,
+          top: Platform.OS === 'ios' ? 100 : 110,
           zIndex: 10,
         }}
       >
@@ -398,6 +397,6 @@ export default function ShowScreen() {
           ) : null}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
