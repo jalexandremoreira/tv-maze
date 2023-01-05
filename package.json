@@ -34,7 +34,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@types/": "react-navigation/native",
     "@types/lodash": "^4.14.191",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.70.6",
